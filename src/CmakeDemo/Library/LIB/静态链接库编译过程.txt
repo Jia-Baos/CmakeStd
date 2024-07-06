@@ -1,0 +1,4 @@
+1、g++ -c class.cpp
+2、ar -rc class.lib class.o
+3、g++ main.cpp class.lib -o main.exe
+4、./main.exe

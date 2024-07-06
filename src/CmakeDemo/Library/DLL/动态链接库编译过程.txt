@@ -1,0 +1,4 @@
+1、g++ -c -fpic class.cpp
+2、g++ -shared class.o -o class.dll
+3、g++ main.cpp class.dll -o main.exe
+4、./main.exe
