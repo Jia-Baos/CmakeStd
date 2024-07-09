@@ -1,5 +1,4 @@
 #pragma once
-
 #ifndef SRC_TASK_HPP
 #define SRC_TASK_HPP
 

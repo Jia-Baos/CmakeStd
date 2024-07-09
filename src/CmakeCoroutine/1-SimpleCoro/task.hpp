@@ -1,5 +1,4 @@
 #pragma once
-
 #ifndef SRC_TASK_HPP
 #define SRC_TASK_HPP
 
@@ -28,6 +27,7 @@ namespace coro
                 return std::suspend_always{};
             }
 
+            // return_void()和return_value()只能定义其中一个
             // void return_void() noexcept {}
 
             void return_value(int val) noexcept

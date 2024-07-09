@@ -7,7 +7,7 @@ coro::task printNumbers(int val)
     for (size_t i = 0; i < val; ++i)
     {
         std::cout << std::format("val: {}", i) << std::endl;
-        co_await std::suspend_always{};
+        co_await std::suspend_always{}; // 执行到此处挂起
     }
 
     co_return val * 2;

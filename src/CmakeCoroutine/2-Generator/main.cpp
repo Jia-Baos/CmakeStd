@@ -19,15 +19,15 @@ int main(int argc, char *argv[])
         std::cout << res.get_result() << std::endl;
     }
 
-    // for (decltype(res)::iterator it = res.begin(); it != res.end(); ++it)
-    // {
-    //     std::cout << *it << std::endl;
-    // }
+    for (decltype(res)::iterator it = res.begin(); it != res.end(); ++it)
+    {
+        std::cout << *it << std::endl;
+    }
 
-    // for (auto it : res)
-    // {
-    //     std::cout << it << std::endl;
-    // }
+    for (auto it : res)
+    {
+        std::cout << it << std::endl;
+    }
 
     res.destory();
 
