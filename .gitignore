@@ -2,6 +2,8 @@
 build/
 install/
 .vscode/
+.cache/
+.zed/
 
 # Prerequisites
 *.d
