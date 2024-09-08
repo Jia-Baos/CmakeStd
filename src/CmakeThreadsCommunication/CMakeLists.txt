@@ -9,6 +9,8 @@ message(STATUS "Project Dir: ${CMAKE_CURRENT_SOURCE_DIR}")
 aux_source_directory(./src main_files)
 add_executable(${PROJECT_NAME} ${main_files})
 
+target_link_libraries(${PROJECT_NAME} PUBLIC pthread)
+
 install(TARGETS ${PROJECT_NAME}
         ARCHIVE DESTINATION lib/${PROJECT_NAME}
         LIBRARY DESTINATION lib/${PROJECT_NAME}

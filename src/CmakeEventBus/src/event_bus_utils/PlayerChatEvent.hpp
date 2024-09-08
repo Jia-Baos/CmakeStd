@@ -20,71 +20,27 @@
  * THE SOFTWARE.
  */
 
-#ifndef _SRC_EVENT_EVENT_HPP_
-#define _SRC_EVENT_EVENT_HPP_
+#ifndef _SRC_EVENT_PLAYER_CHAT_EVENT_HPP_
+#define _SRC_EVENT_PLAYER_CHAT_EVENT_HPP_
 
-#include "./Object.hpp"
+#include "./Event.hpp"
+#include "../Player.hpp"
 
-#include <vector>
-#include <typeinfo>
-#include <typeindex>
-#include <stdexcept>
+#include <string>
 
-/**
- * \brief The base event class, all events inherit from this class
- */
-class Event : public Object
-{
-public:
-	/**
-	 * \brief Default constructor
-	 *
-	 * @param typeIndex The type ID of the inherited class
-	 * @param sender The sender of the event
-	 */
-	Event(Object &sender) : sender(sender),
-							canceled(false)
-	{
-	}
+class PlayerChatEvent : public Event {
+ public:
+  PlayerChatEvent(Object &sender, Player &player, std::string const &msg) : Event(sender), player_(player), msg_(msg) {}
 
-	/**
-	 * \brief Empty virtual destructor
-	 */
-	virtual ~Event() {}
+  virtual ~PlayerChatEvent() {}
 
-	/**
-	 * \brief Gets the source object for this event
-	 *
-	 * @return The event sender
-	 */
-	Object &getSender()
-	{
-		return sender;
-	}
+  Player &GetPlayer() { return player_; }
 
-	/**
-	 * \brief Gets whether the event has been canceled
-	 *
-	 * @return true if the event is canceled
-	 */
-	bool getCanceled()
-	{
-		return canceled;
-	}
+  std::string const &GetMessage() { return msg_; }
 
-	/**
-	 * \brief Sets the canceled status for the event
-	 *
-	 * @param canceled Whether the even is canceled or not
-	 */
-	void setCanceled(bool canceled)
-	{
-		this->canceled = canceled;
-	}
-
-private:
-	Object &sender;
-	bool canceled;
+ private:
+  Player &player_;
+  std::string const &msg_;
 };
 
-#endif /* _SRC_EVENT_EVENT_HPP_ */
+#endif /* _SRC_EVENT_PLAYER_CHAT_EVENT_HPP_ */

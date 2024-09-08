@@ -13,23 +13,23 @@
 #ifndef BASE_HPP
 #define BASE_HPP
 
+#include <iostream>
 #include <vector>
 #include <atomic>
 #include <thread>
 #include <chrono>
-#include <windows.h>
 
 class Base {
  public:
   Base() = default;
   ~Base() = default;
 
-  void run() {
+  void Run() {
     std::thread([this]() {
       // 等待获取线程
       std::this_thread::sleep_for(std::chrono::milliseconds(3000));
       while (true) {
-        if (!this->getStatus(1000)) {
+        if (!this->GetStatus(1000)) {
           std::cout << "the val is too little" << std::endl;
           this->flag_ = false;
           continue;
@@ -41,21 +41,21 @@ class Base {
       }
     }).detach();
 
-    std::thread([this]() { this->printStatus(); }).join();
+    std::thread([this]() { this->PrintStatus(); }).join();
   }
 
-  bool getStatus(int val) {
+  bool GetStatus(int val) {
     if (val < 100) {
       return false;
     }
     return true;
   }
 
-  void printStatus() {
+  void PrintStatus() {
     while (true) {
       if (!this->flag_) {
         std::cout << "status is not ready" << std::endl;
-        Sleep(100);
+        std::this_thread::sleep_for(std::chrono::microseconds(100));
         continue;
       }
       while (true) {
@@ -64,7 +64,7 @@ class Base {
         }
         break;
       }
-      Sleep(100);
+      std::this_thread::sleep_for(std::chrono::microseconds(100));
     }
   }
 

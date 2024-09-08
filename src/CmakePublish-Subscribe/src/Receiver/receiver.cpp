@@ -1,5 +1,5 @@
 #include "./receiver.hpp"
 
-receiver::receiver() {}
+Receiver::Receiver() {}
 
-receiver::~receiver() {}
+Receiver::~Receiver() {}

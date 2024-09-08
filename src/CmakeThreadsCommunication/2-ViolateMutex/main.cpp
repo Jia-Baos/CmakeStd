@@ -16,7 +16,7 @@
 std::mutex mtx;  // 全局互斥锁
 volatile int tickets = 100;
 
-void sellTickets(std::string name) {
+void SellTickets(std::string name) {
   while (tickets > 0) {
     // 获取互斥锁
     mtx.lock();
@@ -32,9 +32,9 @@ void sellTickets(std::string name) {
 }
 
 int main(int argc, const char *argv[]) {
-  std::thread t1(sellTickets, "seller1");
-  std::thread t2(sellTickets, "seller2");
-  std::thread t3(sellTickets, "seller3");
+  std::thread t1(SellTickets, "seller1");
+  std::thread t2(SellTickets, "seller2");
+  std::thread t3(SellTickets, "seller3");
   t1.join();
   t2.join();
   t3.join();

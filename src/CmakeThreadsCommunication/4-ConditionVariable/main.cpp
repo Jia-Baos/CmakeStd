@@ -18,10 +18,10 @@
 std::mutex mtx;              // 全局互斥锁
 std::condition_variable cv;  // 条件变量
 std::vector<int> vec;
-int productNum = 5;
+int product_num = 5;
 
 void Producer() {
-  for (int i = 1; i <= productNum; ++i) {
+  for (int i = 1; i <= product_num; ++i) {
     std::unique_lock<std::mutex> lock(mtx);
     // vec 不为空时等待线程锁（阻塞当前线程）。其他线程锁释放时，当前线程继续执行
     while (!vec.empty()) {

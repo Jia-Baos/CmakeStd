@@ -29,7 +29,7 @@ class ThreadSafeCounter {
 
   /// @brief 多个线程/读者能同时度计数器的值
   /// @return
-  size_t get() const {
+  size_t Get() const {
     // 读者, 获取共享锁, 使用shared_lock
     std::shared_lock<std::shared_mutex> lck(mutex_);
     return value_;
@@ -37,7 +37,7 @@ class ThreadSafeCounter {
 
   /// @brief 只有一个线程/写者能充值/写计数器的值
   /// @return
-  size_t increment() {
+  size_t Increment() {
     // 写者, 获取独占锁, 使用unique_lock
     std::unique_lock<std::shared_mutex> lck(mutex_);
     value_++;
@@ -45,7 +45,7 @@ class ThreadSafeCounter {
   }
 
   /// @brief 只有一个线程/写者能重置/写计数器的值
-  void reset() {
+  void Reset() {
     // 写者, 获取独占锁, 使用unique_lock
     std::unique_lock<std::shared_mutex> lck(mutex_);
     value_ = 0;
@@ -58,26 +58,26 @@ class ThreadSafeCounter {
 
 ThreadSafeCounter counter;
 
-void reader(int id) {
+void Reader(int id) {
   std::this_thread::sleep_for(std::chrono::seconds(1));
   std::unique_lock<std::mutex> ulck(mtx);
-  std::cout << "reader #" << id << " get value " << counter.get() << "\n";
+  std::cout << "reader #" << id << " get value " << counter.Get() << "\n";
 }
 
-void writer(int id) {
+void Writer(int id) {
   std::this_thread::sleep_for(std::chrono::seconds(1));
   std::unique_lock<std::mutex> ulck(mtx);
-  std::cout << "writer #" << id << " write value " << counter.increment() << std::endl;
+  std::cout << "writer #" << id << " write value " << counter.Increment() << std::endl;
 }
 
 int main(int argc, char *argv[]) {
   std::thread rth[10];
   std::thread wth[10];
   for (int i = 0; i < 4; i++) {
-    rth[i] = std::thread(reader, i + 1);
+    rth[i] = std::thread(Reader, i + 1);
   }
   for (int i = 0; i < 6; i++) {
-    wth[i] = std::thread(writer, i + 1);
+    wth[i] = std::thread(Writer, i + 1);
   }
 
   for (int i = 0; i < 4; i++) {

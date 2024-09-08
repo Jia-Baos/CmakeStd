@@ -23,7 +23,7 @@
 #ifndef _SRC_PLAYER_HPP_
 #define _SRC_PLAYER_HPP_
 
-#include "./event_bus/Object.hpp"
+#include "./event_bus_utils/Object.hpp"
 
 #include <string>
 
@@ -34,52 +34,31 @@ class PlayerMoveEvent;
  *
  * This is not part of the core functionality and can be modified or deleted as desired
  */
-class Player : public Object
-{
-public:
-	Player(std::string name) : name(name),
-							   posX(0),
-							   posY(0),
-							   posZ(0)
-	{
-	}
+class Player : public Object {
+ public:
+  Player(std::string name) : name_(name), pos_x_(0), pos_y_(0), pos_z_(0) {}
 
-	virtual ~Player()
-	{
-	}
+  virtual ~Player() {}
 
-	const std::string &getName()
-	{
-		return name;
-	}
+  const std::string &GetName() { return name_; }
 
-	void setPosition(int x, int y, int z)
-	{
-		posX = x;
-		posY = y;
-		posZ = z;
-	}
+  void SetPosition(int x, int y, int z) {
+    pos_x_ = x;
+    pos_y_ = y;
+    pos_z_ = z;
+  }
 
-	int getX()
-	{
-		return posX;
-	}
+  int GetX() { return pos_x_; }
 
-	int getY()
-	{
-		return posY;
-	}
+  int GetY() { return pos_y_; }
 
-	int getZ()
-	{
-		return posZ;
-	}
+  int GetZ() { return pos_z_; }
 
-private:
-	std::string name;
-	int posX;
-	int posY;
-	int posZ;
+ private:
+  std::string name_;
+  int pos_x_;
+  int pos_y_;
+  int pos_z_;
 };
 
 #endif /* _SRC_PLAYER_HPP_ */

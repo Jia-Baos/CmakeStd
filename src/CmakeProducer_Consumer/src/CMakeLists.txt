@@ -6,7 +6,7 @@ message(STATUS "Project Name: ${PROJECT_NAME}")
 message(STATUS "Project Dir: ${CMAKE_CURRENT_SOURCE_DIR}")
 
 # 进入三方库文件夹
-add_subdirectory(producerConsumer)
+add_subdirectory(producer_consumer_utils)
 
 # 将源代码添加到此项目的可执行文件。
 aux_source_directory(. main_files)

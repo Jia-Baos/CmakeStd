@@ -5,13 +5,12 @@
 
 #include "../Receiver/receiver.hpp"
 
-class getMessage : public receiver
-{
-public:
-    getMessage();
-    virtual ~getMessage();
+class GetMessage : public Receiver {
+ public:
+  GetMessage();
+  virtual ~GetMessage();
 
-    virtual void recvMessage(std::string message);
+  virtual void RecvMessage(std::string message);
 };
 
-#endif // SRC_GETMESSAGE_HPP
+#endif  // SRC_GETMESSAGE_HPP

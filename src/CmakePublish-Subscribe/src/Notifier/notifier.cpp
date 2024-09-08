@@ -1,18 +1,13 @@
 #include "./notifier.hpp"
 
-notifier::notifier() {}
+Notifier::Notifier() {}
 
-notifier::~notifier() {}
+Notifier::~Notifier() {}
 
-void notifier::loadReceiver(receiver *pRecv)
-{
-    observer_list_.push_back(pRecv);
-}
+void Notifier::LoadReceiver(Receiver *pRecv) { observer_list_.push_back(pRecv); }
 
-void notifier::sendToAllRecv(std::string message)
-{
-    for (auto it : observer_list_)
-    {
-        (*it).recvMessage(message);
-    }
+void Notifier::SendToAllRecv(std::string message) {
+  for (auto it : observer_list_) {
+    (*it).RecvMessage(message);
+  }
 }

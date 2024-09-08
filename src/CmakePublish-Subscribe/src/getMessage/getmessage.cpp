@@ -1,10 +1,9 @@
 #include "./getmessage.hpp"
 
-getMessage::getMessage() {}
+#include <iostream>
 
-getMessage::~getMessage() {}
+GetMessage::GetMessage() {}
 
-void getMessage::recvMessage(std::string message)
-{
-    std::cout << "one receiver receive: " << message << std::endl;
-}
+GetMessage::~GetMessage() {}
+
+void GetMessage::RecvMessage(std::string message) { std::cout << "one receiver receive: " << message << std::endl; }

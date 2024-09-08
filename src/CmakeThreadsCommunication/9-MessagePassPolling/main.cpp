@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
     MyMessage msg;
     while (true) {
       // 轮询队列的消息
-      if (mq.poll(msg)) {
+      if (mq.Poll(msg)) {
         printf("receive message type:%d\n", msg.type);
         if (msg.type == 1001) {
           break;
@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
   printf("send number message to thread.1001 exit\n");
   while (true) {
     scanf("%d", &msg.type);
-    mq.push(msg);
+    mq.Push(msg);
     if (msg.type == 1001) {
       break;
     }

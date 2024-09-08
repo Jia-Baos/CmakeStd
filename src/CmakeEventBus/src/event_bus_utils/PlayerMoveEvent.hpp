@@ -20,38 +20,38 @@
  * THE SOFTWARE.
  */
 
-#ifndef _SRC_EVENT_PLAYER_CHAT_EVENT_HPP_
-#define _SRC_EVENT_PLAYER_CHAT_EVENT_HPP_
+#ifndef _SRC_EVENT_PLAYER_MOVE_EVENT_HPP_
+#define _SRC_EVENT_PLAYER_MOVE_EVENT_HPP_
 
 #include "./Event.hpp"
 #include "../Player.hpp"
 
-#include <string>
+/**
+ * \brief Example event class to showcase some of the features of the EventBus
+ *
+ * This is not part of the core functionality and can be modified or deleted as desired
+ */
+class PlayerMoveEvent : public Event {
+ public:
+  PlayerMoveEvent(Object &sender, Player &player, int oldX, int oldY, int oldZ)
+      : Event(sender), player_(player), old_x_(oldX), old_y_(oldY), old_z_(oldZ) {}
 
-class PlayerChatEvent : public Event
-{
-public:
-	PlayerChatEvent(Object &sender, Player &player, std::string const &msg) : Event(sender),
-																			  player(player),
-																			  msg(msg)
-	{
-	}
+  virtual ~PlayerMoveEvent() {}
 
-	virtual ~PlayerChatEvent() {}
+  Player &GetPlayer() { return player_; }
 
-	Player &getPlayer()
-	{
-		return player;
-	}
+  int GetOldX() { return old_x_; }
 
-	std::string const &getMessage()
-	{
-		return msg;
-	}
+  int GetOldY() { return old_y_; }
 
-private:
-	Player &player;
-	std::string const &msg;
+  int GetOldZ() { return old_z_; }
+
+ private:
+  Player &player_;
+
+  int old_x_;
+  int old_y_;
+  int old_z_;
 };
 
-#endif /* _SRC_EVENT_PLAYER_CHAT_EVENT_HPP_ */
+#endif /* _SRC_EVENT_PLAYER_MOVE_EVENT_HPP_ */

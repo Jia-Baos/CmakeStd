@@ -17,6 +17,14 @@ target_include_directories(kalman_shared
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${Lib_Dir})
 
+target_link_libraries(kalman_static
+        PUBLIC
+        Eigen3::Eigen)
+
+target_link_libraries(kalman_shared
+        PUBLIC
+        Eigen3::Eigen)
+
 set_target_properties(kalman_static PROPERTIES OUTPUT_NAME "kalman")
 set_target_properties(kalman_shared PROPERTIES OUTPUT_NAME "kalman")
 

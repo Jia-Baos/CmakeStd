@@ -17,7 +17,7 @@
 int cnt;
 std::atomic_int acnt;
 
-void func() {
+void Func() {
   for (size_t i = 0; i < 10000; ++i) {
     ++cnt;
     ++acnt;
@@ -27,7 +27,7 @@ void func() {
 int main(int argc, char *argv[]) {
   std::vector<std::jthread> pool;
   for (size_t i = 0; i < 10; ++i) {
-    pool.emplace_back(func);
+    pool.emplace_back(Func);
   }
 
   std::cout << "The atomic counter is " << acnt << std::endl;

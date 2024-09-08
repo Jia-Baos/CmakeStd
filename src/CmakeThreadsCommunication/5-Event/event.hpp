@@ -29,55 +29,55 @@ class Event {
 
  public:
   Event() {
-    m_totalFunc = 0;
-    m_obj = nullptr;
+    m_total_func_ = 0;
+    m_obj_ = nullptr;
     for (int i = 0; i < EVENT_LIST_MAX_NUM; i++) {
-      m_func[i] = nullptr;
+      m_func_[i] = nullptr;
     }
   }
 
   // 关联回调成员函数
   template <class _func_type>
-  void associate(Object *obj, _func_type func) {
-    m_obj = obj;
-    m_func[m_totalFunc] = static_cast<pMemFunc>(func);
-    m_totalFunc++;
+  void Associate(Object *obj, _func_type func) {
+    m_obj_ = obj;
+    m_func_[m_total_func_] = static_cast<pMemFunc>(func);
+    m_total_func_++;
   }
   // 删除事件关联回调成员函数
   template <class _func_type>
-  void disAssociate(Object *obj, _func_type func) {
-    if (obj != m_obj) {
+  void DisAssociate(Object *obj, _func_type func) {
+    if (obj != m_obj_) {
       return;
     }
 
     // 查找
-    for (int i = 0; i < m_totalFunc; i++) {
-      if (m_func[i] == func) {
+    for (int i = 0; i < m_total_func_; i++) {
+      if (m_func_[i] == func) {
         break;
       }
     }
 
     // 移动删除
-    for (int i; i < m_totalFunc - 1; i++) {
-      m_func[i] = m_func[i + 1];
-      m_func[i] = nullptr;
-      m_totalFunc--;
+    for (int i; i < m_total_func_ - 1; i++) {
+      m_func_[i] = m_func_[i + 1];
+      m_func_[i] = nullptr;
+      m_total_func_--;
     }
   }
 
   // 执行关联的回调函数
-  void sendEvent(ArgType arg) {
-    for (int i = 0; i < m_totalFunc; i++) {
-      if (m_func[i] != nullptr) {
-        ((m_obj->*pMemFunc(m_func[i])))(arg);
+  void SendEvent(ArgType arg) {
+    for (int i = 0; i < m_total_func_; i++) {
+      if (m_func_[i] != nullptr) {
+        ((m_obj_->*pMemFunc(m_func_[i])))(arg);
       }
     }
   }
 
  private:
-  Object *m_obj;
-  pMemFunc m_func[EVENT_LIST_MAX_NUM];
-  int m_totalFunc;
+  Object *m_obj_;
+  pMemFunc m_func_[EVENT_LIST_MAX_NUM];
+  int m_total_func_;
 };
 
 /*----------------------------------------------------------------*/
@@ -85,18 +85,18 @@ class Event {
 /*----------------------------------------------------------------*/
 class TestEvent {
  public:
-  void test() {
+  void Test() {
     // do somsthing
     // ……
 
     // 触发事件
-    myEvent.sendEvent(100);
-    myEvent.sendEvent(200);
+    my_event.SendEvent(100);
+    my_event.SendEvent(200);
   }
 
  public:
   // 定义事件
-  Event<bool, int> myEvent;
+  Event<bool, int> my_event;
 };
 
 /*----------------------------------------------------------------*/
@@ -106,27 +106,27 @@ class TestClass : public Object {
  public:
   TestClass() {
     // 关联事件
-    m_event.myEvent.associate(this, &TestClass::executeCb1);
-    m_event.myEvent.associate(this, &TestClass::executeCb2);
+    m_event_.my_event.Associate(this, &TestClass::ExecuteCb1);
+    m_event_.my_event.Associate(this, &TestClass::ExecuteCb2);
   }
 
   // 事件响应函数
-  bool executeCb1(int result) {
+  bool ExecuteCb1(int result) {
     std::cout << "executeCb1 result = " << result << std::endl;
     return true;
   }
   // 事件响应函数
-  bool executeCb2(int result) {
+  bool ExecuteCb2(int result) {
     std::cout << "executeCb2 result = " << result << std::endl;
     return true;
   }
 
-  void execute() { m_event.test(); }
-  void stop() {
+  void Execute() { m_event_.Test(); }
+  void Stop() {
     // 删除事件关联函数
-    m_event.myEvent.disAssociate(this, &TestClass::executeCb1);
+    m_event_.my_event.DisAssociate(this, &TestClass::ExecuteCb1);
   }
 
  private:
-  TestEvent m_event;
+  TestEvent m_event_;
 };

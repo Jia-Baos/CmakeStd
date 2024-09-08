@@ -20,58 +20,19 @@
  * THE SOFTWARE.
  */
 
-#ifndef _SRC_EVENT_PLAYER_MOVE_EVENT_HPP_
-#define _SRC_EVENT_PLAYER_MOVE_EVENT_HPP_
+#ifndef _SRC_EVENT_HANDLER_REGISTRATION_HPP_
+#define _SRC_EVENT_HANDLER_REGISTRATION_HPP_
 
-#include "./Event.hpp"
-#include "../Player.hpp"
-
-#include <string>
+#include "./Object.hpp"
 
 /**
- * \brief Example event class to showcase some of the features of the EventBus
- *
- * This is not part of the core functionality and can be modified or deleted as desired
+ * \brief Interface that that allows event handlers to be removed from the EventBus
  */
-class PlayerMoveEvent : public Event
-{
-public:
-	PlayerMoveEvent(Object &sender, Player &player, int oldX, int oldY, int oldZ) : Event(sender),
-																					player(player),
-																					oldX(oldX),
-																					oldY(oldY),
-																					oldZ(oldZ)
-	{
-	}
+class HandlerRegistration : public Object {
+ public:
+  virtual ~HandlerRegistration() {}
 
-	virtual ~PlayerMoveEvent() {}
-
-	Player &getPlayer()
-	{
-		return player;
-	}
-
-	int getOldX()
-	{
-		return oldX;
-	}
-
-	int getOldY()
-	{
-		return oldY;
-	}
-
-	int getOldZ()
-	{
-		return oldZ;
-	}
-
-private:
-	Player &player;
-
-	int oldX;
-	int oldY;
-	int oldZ;
+  virtual void RemoveHandler() = 0;
 };
 
-#endif /* _SRC_EVENT_PLAYER_MOVE_EVENT_HPP_ */
+#endif /* _SRC_EVENT_HANDLER_REGISTRATION_HPP_ */

@@ -16,32 +16,28 @@
 #include <mutex>
 #include <condition_variable>
 
-int res = 0;                // 保存结果的全局变量
-std::mutex mtx;             // 互斥锁全局变量
-std::condition_variable cv; // 全局条件变量
+int res = 0;                 // 保存结果的全局变量
+std::mutex mtx;              // 互斥锁全局变量
+std::condition_variable cv;  // 全局条件变量
 
-void accumulate(std::vector<int>::iterator first,
-                std::vector<int>::iterator last)
-{
-    int sum = std::accumulate(first, last, 0);
-    std::unique_lock<std::mutex> locker(mtx);
-    res = sum;
-    locker.unlock();
-    cv.notify_one(); // 向一个等待线程发出“条件已满足”的通知
+void Accumulate(std::vector<int>::iterator first, std::vector<int>::iterator last) {
+  int sum = std::accumulate(first, last, 0);
+  std::unique_lock<std::mutex> locker(mtx);
+  res = sum;
+  locker.unlock();
+  cv.notify_one();  // 向一个等待线程发出“条件已满足”的通知
 }
 
-int main(int argc, char *argv[])
-{
-    std::vector<int> numbers = {1, 2, 3, 4, 5, 6};
-    std::thread work_thread(accumulate, numbers.begin(), numbers.end());
+int main(int argc, char *argv[]) {
+  std::vector<int> numbers = {1, 2, 3, 4, 5, 6};
+  std::thread work_thread(Accumulate, numbers.begin(), numbers.end());
 
-    std::unique_lock<std::mutex> locker(mtx);
-    // 如果条件变量被唤醒，检查结果是否被改变，为真则直接返回，为假则继续等待
-    cv.wait(locker, []()
-              { return res; });
-    std::cout << "result = " << res << std::endl;
-    locker.unlock();
-    work_thread.join(); // 阻塞等待线程执行完成
+  std::unique_lock<std::mutex> locker(mtx);
+  // 如果条件变量被唤醒，检查结果是否被改变，为真则直接返回，为假则继续等待
+  cv.wait(locker, []() { return res; });
+  std::cout << "result = " << res << std::endl;
+  locker.unlock();
+  work_thread.join();  // 阻塞等待线程执行完成
 
-    return 0;
+  return 0;
 }

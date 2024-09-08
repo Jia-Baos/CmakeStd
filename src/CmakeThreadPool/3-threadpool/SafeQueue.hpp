@@ -8,59 +8,52 @@
 
 // Thread safe implementation of a Queue using an std::queue
 template <typename T>
-class SafeQueue
-{
-public:
-    SafeQueue() = default;
-    ~SafeQueue() = default;
+class SafeQueue {
+ public:
+  SafeQueue() = default;
+  ~SafeQueue() = default;
 
-    SafeQueue(const SafeQueue &other) = delete;
-    SafeQueue &operator=(const SafeQueue &other) = delete;
+  SafeQueue(const SafeQueue &other) = delete;
+  SafeQueue &operator=(const SafeQueue &other) = delete;
 
-    SafeQueue(SafeQueue &&other) = delete;
-    SafeQueue &operator=(SafeQueue &&other) = delete;
+  SafeQueue(SafeQueue &&other) = delete;
+  SafeQueue &operator=(SafeQueue &&other) = delete;
 
-    bool empty()
-    {
-        std::unique_lock<std::mutex> lock(m_mutex);
-        return m_queue.empty();
+  bool Empty() {
+    std::unique_lock<std::mutex> lock(m_mutex_);
+    return m_queue_.empty();
+  }
+
+  int Size() {
+    std::unique_lock<std::mutex> lock(m_mutex_);
+    return m_queue_.size();
+  }
+
+  void Enqueue(T &value) {
+    std::unique_lock<std::mutex> lock(m_mutex_);
+    m_queue_.emplace(value);
+  }
+
+  void Enqueue(T &&value) {
+    std::unique_lock<std::mutex> lock(m_mutex_);
+    m_queue_.emplace(std::move(value));
+  }
+
+  bool Dequeue(T &value) {
+    std::unique_lock<std::mutex> lock(m_mutex_);
+
+    if (m_queue_.empty()) {
+      return false;
     }
+    value = std::move(m_queue_.front());
 
-    int size()
-    {
-        std::unique_lock<std::mutex> lock(m_mutex);
-        return m_queue.size();
-    }
+    m_queue_.pop();
+    return true;
+  }
 
-    void enqueue(T &value)
-    {
-        std::unique_lock<std::mutex> lock(m_mutex);
-        m_queue.emplace(value);
-    }
-
-    void enqueue(T &&value)
-    {
-        std::unique_lock<std::mutex> lock(m_mutex);
-        m_queue.emplace(std::move(value));
-    }
-
-    bool dequeue(T &value)
-    {
-        std::unique_lock<std::mutex> lock(m_mutex);
-
-        if (m_queue.empty())
-        {
-            return false;
-        }
-        value = std::move(m_queue.front());
-
-        m_queue.pop();
-        return true;
-    }
-
-private:
-    std::queue<T> m_queue;
-    std::mutex m_mutex;
+ private:
+  std::queue<T> m_queue_;
+  std::mutex m_mutex_;
 };
 
 #endif /* !SRC_SAFEQUEUE_HPP */

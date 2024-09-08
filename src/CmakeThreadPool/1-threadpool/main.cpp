@@ -2,24 +2,22 @@
 #include "./ThreadPool.hpp"
 
 // Simple function that adds multiplies two numbers and prints the result
-void multiply(const int a, const int b)
-{
-    const int res = a * b;
-    std::cout << "res in thread is: " << res << std::endl;
+void Multiply(const int a, const int b) {
+  const int kRes = a * b;
+  std::cout << "res in thread is: " << kRes << std::endl;
 }
 
-int main(int argc, char *argv[])
-{
-    // Create pool with 3 threads
-    ThreadPool pool(3);
+int main(int argc, char *argv[]) {
+  // Create pool with 3 threads
+  ThreadPool pool(3);
 
-    // Initialize pool
-    pool.init();
+  // Initialize pool
+  pool.Init();
 
-    auto future = pool.submit(multiply, 2, 3);
+  auto future = pool.Submit(Multiply, 2, 3);
 
-    // Shutdown the pool, releasing all threads
-    pool.shutdown();
+  // Shutdown the pool, releasing all threads
+  pool.Shutdown();
 
-    return 0;
+  return 0;
 }

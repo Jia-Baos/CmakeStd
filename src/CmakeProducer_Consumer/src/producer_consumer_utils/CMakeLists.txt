@@ -13,6 +13,9 @@ target_include_directories(producer_consumer_static PUBLIC ${CMAKE_CURRENT_SOURC
 set_target_properties(producer_consumer_static PROPERTIES OUTPUT_NAME "producer_consumer")
 # set_target_properties(producer_consumer_shared PROPERTIES OUTPUT_NAME "producer_consumer")
 
+target_link_libraries(producer_consumer_static PUBLIC pthread)
+# target_link_libraries(producer_consumer_shared PUBLIC pthread)
+
 install(TARGETS producer_consumer_static
         ARCHIVE DESTINATION lib/${PROJECT_NAME}
         LIBRARY DESTINATION lib/${PROJECT_NAME}

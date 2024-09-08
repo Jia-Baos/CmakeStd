@@ -1,7 +1,10 @@
-#pragma
+#pragma once
+#ifndef EDGE_H
+#define EDGE_H
 
-template <typename T> class Edge {
-public:
+template <typename T>
+class Edge {
+ public:
   T vertex;
   float weight;
 
@@ -19,3 +22,4 @@ public:
 
   bool operator==(const Edge &obj) const { return obj.vertex == vertex; }
 };
+#endif  // !EDGE_H

@@ -2,29 +2,27 @@
 #include "./ThreadPool.hpp"
 
 // Simple function that adds multiplies two numbers and returns the result
-int multiply(const int a, const int b)
-{
-    const int res = a * b;
-    return res;
+int Multiply(const int a, const int b) {
+  const int kRes = a * b;
+  return kRes;
 }
 
-int main(int argc, char *argv[])
-{
-    // Create pool with 3 threads
-    ThreadPool pool(3);
+int main(int argc, char *argv[]) {
+  // Create pool with 3 threads
+  ThreadPool pool(3);
 
-    // Initialize pool
-    pool.init();
+  // Initialize pool
+  pool.Init();
 
-    /// The type of future is given by the return type of the function
-    std::future<int> future = pool.submit(multiply, 2, 3);
-    // auto future = pool.submit(multiply, 2, 3);
+  /// The type of future is given by the return type of the function
+  std::future<int> future = pool.Submit(Multiply, 2, 3);
+  // auto future = pool.submit(multiply, 2, 3);
 
-    const int result = future.get();
-    std::cout << result << std::endl;
+  const int kResult = future.get();
+  std::cout << kResult << std::endl;
 
-    // Shutdown the pool, releasing all threads
-    pool.shutdown();
+  // Shutdown the pool, releasing all threads
+  pool.Shutdown();
 
-    return 0;
+  return 0;
 }

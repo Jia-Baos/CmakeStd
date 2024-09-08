@@ -3,21 +3,20 @@
 #ifndef SRC_NOTIFIER_HPP
 #define SRC_NOTIFIER_HPP
 
-#include <vector>
 #include <string>
+#include <vector>
 #include "../Receiver/receiver.hpp"
 
-class notifier
-{
-public:
-    notifier();
-    virtual ~notifier();
+class Notifier {
+ public:
+  Notifier();
+  virtual ~Notifier();
 
-    void loadReceiver(receiver *pRecv);
-    void sendToAllRecv(std::string message);
+  void LoadReceiver(Receiver *pRecv);
+  void SendToAllRecv(std::string message);
 
-private:
-    std::vector<receiver *> observer_list_;
+ private:
+  std::vector<Receiver *> observer_list_;
 };
 
-#endif // SRC_NOTIFIER_HPP
+#endif  // SRC_NOTIFIER_HPP

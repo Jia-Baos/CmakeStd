@@ -20,19 +20,53 @@
  * THE SOFTWARE.
  */
 
-#ifndef _SRC_EVENT_HANDLER_REGISTRATION_HPP_
-#define _SRC_EVENT_HANDLER_REGISTRATION_HPP_
+#ifndef _SRC_EVENT_EVENT_HPP_
+#define _SRC_EVENT_EVENT_HPP_
 
 #include "./Object.hpp"
 
 /**
- * \brief Interface that that allows event handlers to be removed from the EventBus
+ * \brief The base event class, all events inherit from this class
  */
-class HandlerRegistration : public Object {
-public:
-	virtual ~HandlerRegistration() { }
+class Event : public Object {
+ public:
+  /**
+   * \brief Default constructor
+   *
+   * @param typeIndex The type ID of the inherited class
+   * @param sender The sender of the event
+   */
+  Event(Object &sender) : sender_(sender), canceled_(false) {}
 
-	virtual void removeHandler() = 0;
+  /**
+   * \brief Empty virtual destructor
+   */
+  virtual ~Event() {}
+
+  /**
+   * \brief Gets the source object for this event
+   *
+   * @return The event sender
+   */
+  Object &GetSender() { return sender_; }
+
+  /**
+   * \brief Gets whether the event has been canceled
+   *
+   * @return true if the event is canceled
+   */
+  bool GetCanceled() { return canceled_; }
+
+  /**
+   * \brief Sets the canceled status for the event
+   *
+   * @param canceled Whether the even is canceled or not
+   */
+  void SetCanceled(bool canceled) { this->canceled_ = canceled; }
+
+ private:
+  Object &sender_;
+  bool canceled_;
 };
 
-#endif /* _SRC_EVENT_HANDLER_REGISTRATION_HPP_ */
+#endif /* _SRC_EVENT_EVENT_HPP_ */

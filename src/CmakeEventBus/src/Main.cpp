@@ -20,11 +20,11 @@
  * THE SOFTWARE.
  */
 
-#include "./event_bus/EventHandler.hpp"
-#include "./event_bus/EventBus.hpp"
+#include "./event_bus_utils/EventHandler.hpp"
+#include "./event_bus_utils/EventBus.hpp"
 
-#include "./event_bus/PlayerMoveEvent.hpp"
-#include "./event_bus/PlayerChatEvent.hpp"
+#include "./event_bus_utils/PlayerMoveEvent.hpp"
+#include "./event_bus_utils/PlayerChatEvent.hpp"
 
 #include "./Player.hpp"
 
@@ -37,210 +37,183 @@
  *
  * This snippet shows how to implement multiple EventHandlers in a single class
  */
-class PlayerListener : public EventHandler<PlayerMoveEvent>, public EventHandler<PlayerChatEvent>
-{
-public:
-	PlayerListener() {}
+class PlayerListener : public EventHandler<PlayerMoveEvent>, public EventHandler<PlayerChatEvent> {
+ public:
+  PlayerListener() {}
 
-	virtual ~PlayerListener() {}
+  virtual ~PlayerListener() {}
 
-	/**
-	 * \brief This event handler keeps the player inside a specific border area
-	 *
-	 * @param e The PlayerMoveEvent event
-	 */
-	virtual void onEvent(PlayerMoveEvent &e) override
-	{
+  /**
+   * \brief This event handler keeps the player inside a specific border area
+   *
+   * @param e The PlayerMoveEvent event
+   */
+  virtual void OnEvent(PlayerMoveEvent &e) override {
+    // Ignore the event if it's already been canceled
+    if (e.GetCanceled()) {
+      return;
+    }
 
-		// Ignore the event if it's already been canceled
-		if (e.getCanceled())
-		{
-			return;
-		}
+    Player &p = e.GetPlayer();
 
-		Player &p = e.getPlayer();
+    // Cancel the event if the new player position is outside of the border area
+    if (std::abs(p.GetX()) > kBorderSize || std::abs(p.GetZ()) > kBorderSize) {
+      e.SetCanceled(true);
+      printf("Canceled setting player %s position - outside of border\n", p.GetName().c_str());
+      return;
+    }
+  }
 
-		// Cancel the event if the new player position is outside of the border area
-		if (std::abs(p.getX()) > BORDER_SIZE || std::abs(p.getZ()) > BORDER_SIZE)
-		{
-			e.setCanceled(true);
-			printf("Canceled setting player %s position - outside of border\n", p.getName().c_str());
-			return;
-		}
-	}
+  /**
+   * This event handler prints out a debug message whenever a chat event is fired
+   *
+   * @param e The PlayerChatEvent event
+   */
+  virtual void OnEvent(PlayerChatEvent &e) override {
+    // Ignore the event if it's already been canceled
+    if (e.GetCanceled()) {
+      return;
+    }
 
-	/**
-	 * This event handler prints out a debug message whenever a chat event is fired
-	 *
-	 * @param e The PlayerChatEvent event
-	 */
-	virtual void onEvent(PlayerChatEvent &e) override
-	{
+    printf("The player '%s' said: %s\n", e.GetPlayer().GetName().c_str(), e.GetMessage().c_str());
+  }
 
-		// Ignore the event if it's already been canceled
-		if (e.getCanceled())
-		{
-			return;
-		}
-
-		printf("The player '%s' said: %s\n", e.getPlayer().getName().c_str(), e.getMessage().c_str());
-	}
-
-private:
-	static const int BORDER_SIZE = 500;
+ private:
+  static const int kBorderSize = 500;
 };
 
 /**
  * \brief Demo class showing off some functionality of the EventBus
  */
-class EventBusDemo : public Object
-{
-public:
-	EventBusDemo()
-	{
-		playerMoveReg = nullptr;
-		playerChatReg = nullptr;
-	}
+class EventBusDemo : public Object {
+ public:
+  EventBusDemo() {
+    player_move_reg_ = nullptr;
+    player_chat_reg_ = nullptr;
+  }
 
-	virtual ~EventBusDemo() {}
+  virtual ~EventBusDemo() {}
 
-	/**
-	 * Demo Function 1
-	 *
-	 * Registers an event listener on player1 and shows how events can be fired and canceled
-	 */
-	void Demo1()
-	{
+  /**
+   * Demo Function 1
+   *
+   * Registers an event listener on player1 and shows how events can be fired and canceled
+   */
+  void Demo1() {
+    // Two unique player objects
+    Player player1("Player1");
+    Player player2("Player2");
 
-		// Two unique player objects
-		Player player1("Player1");
-		Player player2("Player2");
+    // Declare a local PlayerMoveEvent and use the event bus to fire it
+    // There are currently no listeners so this won't actually do anything
+    PlayerMoveEvent e(*this, player1, 0, 0, 0);
+    EventBus::FireEvent(e);
 
-		// Declare a local PlayerMoveEvent and use the event bus to fire it
-		// There are currently no listeners so this won't actually do anything
-		PlayerMoveEvent e(*this, player1, 0, 0, 0);
-		EventBus::FireEvent(e);
+    // Create the player listener instance
+    PlayerListener player_listener;
 
-		// Create the player listener instance
-		PlayerListener playerListener;
+    // Register the player listener to handler PlayerMoveEvent events
+    // Passing player1 as a second parameter means it will only listen for events from that object
+    // The return value is a HandlerRegistration pointer that can be used to unregister the event handler
+    player_move_reg_ = EventBus::AddHandler<PlayerMoveEvent>(player_listener, player1);
 
-		// Register the player listener to handler PlayerMoveEvent events
-		// Passing player1 as a second parameter means it will only listen for events from that object
-		// The return value is a HandlerRegistration pointer that can be used to unregister the event handler
-		playerMoveReg = EventBus::AddHandler<PlayerMoveEvent>(playerListener, player1);
+    // The playerListener gets registered again, but this time as player chat event handler
+    // The lack of a second parameter means that it will service ALL player chat events,
+    // regardless of the source
+    player_chat_reg_ = EventBus::AddHandler<PlayerChatEvent>(player_listener);
 
-		// The playerListener gets registered again, but this time as player chat event handler
-		// The lack of a second parameter means that it will service ALL player chat events,
-		// regardless of the source
-		playerChatReg = EventBus::AddHandler<PlayerChatEvent>(playerListener);
+    int x = 0;
 
-		int x = 0;
+    // This loop will attempt to increase the X position of player one
+    // by 200 until it reaches 1000 or if the setPosition function fails.
 
-		// This loop will attempt to increase the X position of player one
-		// by 200 until it reaches 1000 or if the setPosition function fails.
+    // The Player.setPosition() method fires a PlayerMoveEvent event internally
+    //
+    // The PlayerListener class has an event handler that will cancel the
+    // PlayerMoveEvent if the X position is greater than 500
+    while (x <= 1000) {
+      printf("Changing player 1 X to %d\n", x);
 
-		// The Player.setPosition() method fires a PlayerMoveEvent event internally
-		//
-		// The PlayerListener class has an event handler that will cancel the
-		// PlayerMoveEvent if the X position is greater than 500
-		while (x <= 1000)
-		{
-			printf("Changing player 1 X to %d\n", x);
+      // This method will fail once X > 500 because of the event handler we registered
+      if (SetPlayerPostionWithEvent(player1, x, 0, 0) == true) {
+        x += 200;
+      } else {
+        printf("Setting player 1 position was canceled\n");
+        break;
+      }
+    }
 
-			// This method will fail once X > 500 because of the event handler we registered
-			if (setPlayerPostionWithEvent(player1, x, 0, 0) == true)
-			{
-				x += 200;
-			}
-			else
-			{
-				printf("Setting player 1 position was canceled\n");
-				break;
-			}
-		}
+    x = 0;
 
-		x = 0;
+    // This loop does the same thing as the loop above, just with player2.
+    // Since we only registered the PlayerListener to player1, the bounds
+    // checking will have no effect for this loop
+    //
+    // This shows how an event handler will handle data from one source while ignoring others
+    while (x <= 1000) {
+      printf("Changing player 2 X to %d\n", x);
+      if (SetPlayerPostionWithEvent(player2, x, 0, 0) == true) {
+        x += 200;
+      } else {
+        printf("Setting player 2 position was canceled\n");
+        break;
+      }
+    }
 
-		// This loop does the same thing as the loop above, just with player2.
-		// Since we only registered the PlayerListener to player1, the bounds
-		// checking will have no effect for this loop
-		//
-		// This shows how an event handler will handle data from one source while ignoring others
-		while (x <= 1000)
-		{
-			printf("Changing player 2 X to %d\n", x);
-			if (setPlayerPostionWithEvent(player2, x, 0, 0) == true)
-			{
-				x += 200;
-			}
-			else
-			{
-				printf("Setting player 2 position was canceled\n");
-				break;
-			}
-		}
+    // Here two chat player chat events are created for each player and fired.
+    // Since the chat listener was registered without a source object, it will service
+    // all chat events and print both messages
+    //
+    // The event handler will print out the player name with the message when the event is fired
+    PlayerChatEvent chat1(*this, player1, "Hello I am Player 1!");
+    EventBus::FireEvent(chat1);
 
-		// Here two chat player chat events are created for each player and fired.
-		// Since the chat listener was registered without a source object, it will service
-		// all chat events and print both messages
-		//
-		// The event handler will print out the player name with the message when the event is fired
-		PlayerChatEvent chat1(*this, player1, "Hello I am Player 1!");
-		EventBus::FireEvent(chat1);
+    PlayerChatEvent chat2(*this, player2, "Hello I am Player 2!");
+    EventBus::FireEvent(chat2);
 
-		PlayerChatEvent chat2(*this, player2, "Hello I am Player 2!");
-		EventBus::FireEvent(chat2);
+    // The HandlerRegistration object can be used to unregister the event listener
+    player_chat_reg_->RemoveHandler();
 
-		// The HandlerRegistration object can be used to unregister the event listener
-		playerChatReg->removeHandler();
+    // If a chat event is fired again, it will not be serviced since the handler has been unregistered
+    PlayerChatEvent chat3(*this, player2, "This chat message will not be serviced");
+    EventBus::FireEvent(chat3);
 
-		// If a chat event is fired again, it will not be serviced since the handler has been unregistered
-		PlayerChatEvent chat3(*this, player2, "This chat message will not be serviced");
-		EventBus::FireEvent(chat3);
+    // Clean up
+    player_move_reg_->RemoveHandler();
+    delete player_move_reg_;
+    delete player_chat_reg_;
+  }
 
-		// Clean up
-		playerMoveReg->removeHandler();
-		delete playerMoveReg;
-		delete playerChatReg;
-	}
+ private:
+  HandlerRegistration *player_move_reg_;
+  HandlerRegistration *player_chat_reg_;
 
-private:
-	HandlerRegistration *playerMoveReg;
-	HandlerRegistration *playerChatReg;
+  bool SetPlayerPostionWithEvent(Player &player, int x, int y, int z) {
+    int saved_x = player.GetX();
+    int saved_y = player.GetY();
+    int saved_z = player.GetZ();
 
-	bool setPlayerPostionWithEvent(Player &player, int x, int y, int z)
-	{
+    player.SetPosition(x, y, z);
 
-		int savedX = player.getX();
-		int savedY = player.getY();
-		int savedZ = player.getZ();
+    PlayerMoveEvent e(player, player, saved_x, saved_y, saved_z);
+    EventBus::FireEvent(e);
 
-		player.setPosition(x, y, z);
+    if (e.GetCanceled()) {
+      player.SetPosition(saved_x, saved_y, saved_z);
+      return false;
+    }
 
-		PlayerMoveEvent e(player, player, savedX, savedY, savedZ);
-		EventBus::FireEvent(e);
-
-		if (e.getCanceled())
-		{
-			player.setPosition(savedX, savedY, savedZ);
-			return false;
-		}
-
-		return true;
-	}
+    return true;
+  }
 };
 
-int main()
-{
-	printf("* * * EventBus Demo Program * * * \n");
+int main() {
+  printf("* * * EventBus Demo Program * * * \n");
 
-	try
-	{
-		EventBusDemo demo;
-		demo.Demo1();
-	}
-	catch (std::runtime_error &e)
-	{
-		printf("Runtime exception: %s\n", e.what());
-	}
+  try {
+    EventBusDemo demo;
+    demo.Demo1();
+  } catch (std::runtime_error &e) {
+    printf("Runtime exception: %s\n", e.what());
+  }
 }

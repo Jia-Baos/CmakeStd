@@ -5,10 +5,11 @@ project(kalman)
 message(STATUS "Project Name: ${PROJECT_NAME}")
 message(STATUS "Project Dir: ${CMAKE_CURRENT_SOURCE_DIR}")
 
-set(Lib_Dir "D:/eigen-3.4.0")
+# Eigen3
+find_package(Eigen3 REQUIRED)
 
 # 进入三方库文件夹
-add_subdirectory(kalman)
+add_subdirectory(kalman_utils)
 
 # 将源代码添加到此项目的可执行文件。
 aux_source_directory(. main_files)

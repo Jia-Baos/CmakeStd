@@ -14,14 +14,14 @@
 #include <future>
 #include <chrono>
 
-void connect1(std::promise<bool> &flag) {
+void Connect1(std::promise<bool> &flag) {
   std::this_thread::sleep_for(std::chrono::seconds(1));
 
   flag.set_value(true);
   // std::cout << "Set the flag to true " << std::endl;
 }
 
-void connect2(std::future<bool> &flag) {
+void Connect2(std::future<bool> &flag) {
   std::cout << "Status of valid(): " << flag.valid() << ", before get()" << std::endl;
 
   auto flag_tmp = flag.get();
@@ -36,9 +36,9 @@ int main(int argc, char *argv[]) {
   std::future<bool> fu1 = pr1.get_future();
 
   // 创建一个线程t1，将函数Thread_Fun1及对象pr1放在线程里面执行
-  std::thread t1(connect1, std::ref(pr1));
+  std::thread t1(Connect1, std::ref(pr1));
   // 创建一个线程t2，将函数Thread_Fun2及对象fu1放在线程里面执行
-  std::thread t2(connect2, std::ref(fu1));
+  std::thread t2(Connect2, std::ref(fu1));
 
   // 阻塞至线程结束
   t1.detach();

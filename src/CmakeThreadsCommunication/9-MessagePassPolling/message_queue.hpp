@@ -18,20 +18,20 @@ class MessageQueue {
  public:
   /// @brief 推入消息
   /// @param msg 消息对象
-  void push(const T &msg) {
-    std::unique_lock<std::mutex> lck(m_mtx);
-    m_queue.push(msg);
-    m_cv.notify_one();
+  void Push(const T &msg) {
+    std::unique_lock<std::mutex> lck(m_mtx_);
+    m_queue_.push(msg);
+    m_cv_.notify_one();
   }
 
   /// @brief 轮询消息
   /// @param msg 消息对象
   /// @return 是否接收到消息
-  bool poll(T &msg) {
-    std::unique_lock<std::mutex> lck(m_mtx);
-    if (m_queue.size()) {
-      msg = m_queue.front();
-      m_queue.pop();
+  bool Poll(T &msg) {
+    std::unique_lock<std::mutex> lck(m_mtx_);
+    if (m_queue_.size()) {
+      msg = m_queue_.front();
+      m_queue_.pop();
       return true;
     }
     return false;
@@ -39,25 +39,25 @@ class MessageQueue {
 
   /// @brief 等待消息
   /// @param msg 消息对象
-  void wait(T &msg) {
-    std::unique_lock<std::mutex> lck(m_mtx);
-    while (!m_queue.size()) {
-      m_cv.wait(lck);
+  void Wait(T &msg) {
+    std::unique_lock<std::mutex> lck(m_mtx_);
+    while (!m_queue_.size()) {
+      m_cv_.wait(lck);
     }
 
-    msg = m_queue.front();
-    m_queue.pop();
+    msg = m_queue_.front();
+    m_queue_.pop();
   }
 
   /// @brief 队列长度
   /// @return 队列长度
-  size_t size() {
-    std::unique_lock<std::mutex> lck(m_mtx);
-    return m_queue.size();
+  size_t Size() {
+    std::unique_lock<std::mutex> lck(m_mtx_);
+    return m_queue_.size();
   }
 
  private:
-  std::mutex m_mtx;              // 互斥量
-  std::queue<T> m_queue;         // 消息队列
-  std::condition_variable m_cv;  // 条件变量
+  std::mutex m_mtx_;              // 互斥量
+  std::queue<T> m_queue_;         // 消息队列
+  std::condition_variable m_cv_;  // 条件变量
 };

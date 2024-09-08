@@ -12,13 +12,13 @@
 #include "./event.hpp"
 
 int main(int argc, char *argv[]) {
-  TestClass testObj;
+  TestClass test_obj;
 
   std::cout << "---------------first begin---------------" << std::endl;
-  testObj.execute();
-  testObj.stop();
+  test_obj.Execute();
+  test_obj.Stop();
   std::cout << "---------------after delete---------------" << std::endl;
-  testObj.execute();
+  test_obj.Execute();
 
   return 0;
 }

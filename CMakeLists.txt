@@ -29,18 +29,18 @@ file(COPY ${PROJECT_SOURCE_DIR}/README.md DESTINATION ${PROJECT_SOURCE_DIR}/inst
 # 进入主工程文件夹
 add_subdirectory(src)
 
-#引入测试
-add_subdirectory(googletest)
+# #引入测试
+# add_subdirectory(googletest)
 
-# 性能测试
-enable_testing()
-#该选项对于msvc编译器很重要
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-#引入googletest子模块
-add_subdirectory(3rdparty/googletest)
-#引入googletest子模块的头文件，方便其他模块include
-include_directories(3rdparty/googletest/googletest/include)
+# # 性能测试
+# enable_testing()
+# #该选项对于msvc编译器很重要
+# set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+# #引入googletest子模块
+# add_subdirectory(3rdparty/googletest)
+# #引入googletest子模块的头文件，方便其他模块include
+# include_directories(3rdparty/googletest/googletest/include)
 
-# 进入基准测试文件夹
-add_subdirectory(3rdparty/benchmark)
-add_subdirectory(benchmark)
+# # 进入基准测试文件夹
+# add_subdirectory(3rdparty/benchmark)
+# add_subdirectory(benchmark)

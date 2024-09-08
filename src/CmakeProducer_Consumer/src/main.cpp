@@ -1,13 +1,10 @@
 #include <iostream>
-#include "./producerConsumer/producerConsumer.hpp"
+#include "./producer_consumer_utils/producerConsumer.hpp"
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
+  std::cout << "Hello world..." << std::endl;
 
-    std::cout << "Hello world..." << std::endl;
-
-    ProducerConsumer<int> procuderConsumer(100, 6, 6);
-    while (true)
-    {
-    }
+  ProducerConsumer<int> procuder_consumer(6, 6, 6);
+  while (true) {
+  }
 }

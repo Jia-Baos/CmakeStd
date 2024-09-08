@@ -18,7 +18,7 @@ std::mutex mtx;         // 全局互斥锁
 int flag_shared = 0;    // 共享变量
 int flag_privated = 0;  // 私有变量
 
-void task1() {
+void Task1() {
   mtx.lock();
   std::this_thread::sleep_for(std::chrono::seconds(1));
   ++flag_shared;
@@ -26,7 +26,7 @@ void task1() {
   mtx.unlock();
 }
 
-void task2() {
+void Task2() {
   while (true) {
     // 尝试获得锁，成功则修改 flag_shared
     if (mtx.try_lock()) {
@@ -43,8 +43,8 @@ void task2() {
 }
 
 int main(int argc, char *argv[]) {
-  std::thread([]() { task1(); }).join();
-  std::thread([]() { task2(); }).join();
+  std::thread([]() { Task1(); }).join();
+  std::thread([]() { Task2(); }).join();
 
   return 0;
 }

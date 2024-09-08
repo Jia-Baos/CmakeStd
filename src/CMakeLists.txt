@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.27)
 
 # 进入三方库文件夹
-add_subdirectory(MiniCircle)
+# add_subdirectory(MiniCircle)
 
 # 进入执行文件文件夹
-add_subdirectory(app0)
+# add_subdirectory(app0)
 # add_subdirectory(CmakeAsync)
 # add_subdirectory(CmakeCoroutine)
 # add_subdirectory(CmakeDemo)
@@ -15,6 +15,5 @@ add_subdirectory(app0)
 # add_subdirectory(CmakePublish-Subscribe)
 # add_subdirectory(CmakeSocket)
 # add_subdirectory(CmakeThreadPool)
-# add_subdirectory(CmakeThreadsCommunication)
-#
-add_subdirectory(ErrorProcess)
+add_subdirectory(CmakeThreadsCommunication)
+# add_subdirectory(ErrorProcess)

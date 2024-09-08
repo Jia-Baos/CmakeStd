@@ -1,10 +1,7 @@
 #include "./genmessage.hpp"
 
-genMessage::genMessage() {}
+GenMessage::GenMessage() {}
 
-genMessage::~genMessage() {}
+GenMessage::~GenMessage() {}
 
-void genMessage::throwMessage(std::string message)
-{
-    sendToAllRecv(message);
-}
+void GenMessage::ThrowMessage(std::string message) { SendToAllRecv(message); }

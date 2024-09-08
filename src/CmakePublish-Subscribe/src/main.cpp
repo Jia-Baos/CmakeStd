@@ -1,18 +1,15 @@
-#include <iostream>
 #include "./genMessage/genmessage.hpp"
 #include "./getMessage/getmessage.hpp"
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
+  GenMessage notifier;
+  GetMessage receiver1;
+  GetMessage receiver2;
 
-    genMessage notifier;
-    getMessage receiver1;
-    getMessage receiver2;
+  notifier.LoadReceiver(&receiver1);
+  notifier.LoadReceiver(&receiver2);
 
-    notifier.loadReceiver(&receiver1);
-    notifier.loadReceiver(&receiver2);
+  notifier.SendToAllRecv("here it is");
 
-    notifier.sendToAllRecv("here it is");
-
-    return 0;
+  return 0;
 }
